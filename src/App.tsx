@@ -24,7 +24,7 @@ export function App() {
     <BrowserRouter basename={import.meta.env.BASE_URL}>
       <AuthProvider>
         <SettingsProvider>
-          <div className="flex flex-col min-h-screen bg-white text-black font-sans selection:bg-black selection:text-white">
+          <div className="flex flex-col min-h-screen bg-white text-black dark:bg-[#0d1117] dark:text-[#f0f6fc] font-sans selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black transition-colors duration-200">
             {/* Top Navigation */}
             <Navbar />
 

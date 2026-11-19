@@ -97,8 +97,38 @@ export const SettingsPage: React.FC = () => {
             <p className="text-xs text-[#777777]">Color contrast and visual theme</p>
           </div>
 
-          {/* High Contrast Toggle */}
+          {/* Night Mode Toggle */}
           <div className="flex items-center justify-between py-2">
+            <div>
+              <span className="text-xs sm:text-sm font-bold text-black flex items-center gap-1.5">
+                {settings.theme === 'dark' ? (
+                  <Moon className="w-4 h-4 text-amber-400" />
+                ) : (
+                  <Sun className="w-4 h-4 text-amber-500" />
+                )}
+                <span>Night Mode (Dark Theme)</span>
+              </span>
+              <span className="text-xs text-[#666666]">
+                Eye-friendly dark theme designed for low-light environments and reduced visual fatigue.
+              </span>
+            </div>
+            <button
+              onClick={() => updateSetting('theme', settings.theme === 'dark' ? 'light' : 'dark')}
+              className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
+                settings.theme === 'dark' ? 'bg-amber-400' : 'bg-[#D4D4D4]'
+              }`}
+              aria-label="Toggle Night Mode"
+            >
+              <div
+                className={`w-4 h-4 rounded-full bg-white transition-transform absolute top-1 ${
+                  settings.theme === 'dark' ? 'left-7' : 'left-1'
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* High Contrast Toggle */}
+          <div className="flex items-center justify-between py-2 border-t border-[#E5E5E5]">
             <div>
               <span className="text-xs sm:text-sm font-bold text-black block">High-Contrast Mode</span>
               <span className="text-xs text-[#666666]">

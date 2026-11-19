@@ -8,7 +8,7 @@
   }
 
   body {
-    @apply font-sans bg-white text-black antialiased selection:bg-black selection:text-white;
+    @apply font-sans bg-white text-black antialiased selection:bg-black selection:text-white transition-colors duration-200;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -25,10 +25,142 @@
     outline: 2px solid #000000 !important;
   }
 
+  .dark.high-contrast button,
+  .dark.high-contrast a,
+  .dark.high-contrast input,
+  .dark.high-contrast textarea,
+  .dark.high-contrast select {
+    outline: 2px solid #ffffff !important;
+  }
+
   /* Minimal accessible focus indicator */
   *:focus-visible {
-    @apply outline-none ring-2 ring-black ring-offset-2 ring-offset-white;
+    @apply outline-none ring-2 ring-black ring-offset-2 ring-offset-white dark:ring-white dark:ring-offset-black;
   }
+}
+
+/* =========================================================================
+   HearMe AI - Night Mode (Dark Theme) System
+   Provides eye-friendly, high-contrast, WCAG-compliant dark aesthetics
+   ========================================================================= */
+
+html.dark {
+  color-scheme: dark;
+}
+
+.dark,
+.dark body {
+  background-color: #0d1117 !important;
+  color: #f0f6fc !important;
+}
+
+.dark header {
+  background-color: rgba(13, 17, 23, 0.95) !important;
+  border-color: #21262d !important;
+}
+
+.dark footer {
+  background-color: #161b22 !important;
+  border-color: #21262d !important;
+  color: #e6edf3 !important;
+}
+
+/* Surfaces and Cards */
+.dark .bg-white {
+  background-color: #161b22 !important;
+  color: #f0f6fc !important;
+}
+
+.dark .bg-\[\#F7F7F7\],
+.dark .bg-\[\#F9F9F9\],
+.dark .bg-\[\#FAFAFA\],
+.dark .bg-neutral-50,
+.dark .bg-gray-50 {
+  background-color: #0d1117 !important;
+  color: #f0f6fc !important;
+}
+
+.dark .bg-neutral-100,
+.dark .bg-gray-100,
+.dark .bg-\[\#EAEAEA\] {
+  background-color: #21262d !important;
+  color: #f0f6fc !important;
+}
+
+/* Borders */
+.dark .border-\[\#E5E5E5\],
+.dark .border-\[\#EAEAEA\],
+.dark .border-\[\#D4D4D4\],
+.dark .border-neutral-200,
+.dark .border-neutral-300,
+.dark .border-gray-200 {
+  border-color: #30363d !important;
+}
+
+/* Text Colors */
+.dark .text-black {
+  color: #f0f6fc !important;
+}
+
+.dark .text-\[\#111111\],
+.dark .text-\[\#1C1C1C\],
+.dark .text-\[\#222222\],
+.dark .text-\[\#333333\] {
+  color: #f0f6fc !important;
+}
+
+.dark .text-\[\#444444\],
+.dark .text-\[\#555555\],
+.dark .text-\[\#666666\],
+.dark .text-\[\#777777\] {
+  color: #8b949e !important;
+}
+
+.dark .text-\[\#888888\],
+.dark .text-\[\#999999\] {
+  color: #6e7681 !important;
+}
+
+/* Form controls & inputs */
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark textarea,
+.dark select {
+  background-color: #0d1117 !important;
+  color: #f0f6fc !important;
+  border-color: #30363d !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #6e7681 !important;
+}
+
+/* Primary Action Buttons */
+.dark button.bg-black:not(.text-black),
+.dark a.bg-black:not(.text-black) {
+  background-color: #f0f6fc !important;
+  color: #0d1117 !important;
+}
+
+.dark button.bg-black:hover:not(.text-black),
+.dark a.bg-black:hover:not(.text-black) {
+  background-color: #c9d1d9 !important;
+}
+
+.dark button.border-\[\#D4D4D4\],
+.dark button.border-\[\#E5E5E5\] {
+  background-color: #21262d !important;
+  border-color: #30363d !important;
+  color: #f0f6fc !important;
+}
+
+.dark button.border-\[\#D4D4D4\]:hover,
+.dark button.border-\[\#E5E5E5\]:hover {
+  background-color: #30363d !important;
+  border-color: #8b949e !important;
+  color: #ffffff !important;
 }
 
 /* Reduced motion preference */
@@ -65,4 +197,16 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: #777777;
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: #0d1117;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #30363d;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #6e7681;
 }

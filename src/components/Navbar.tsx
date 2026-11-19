@@ -15,6 +15,8 @@ import {
   Contrast,
   Globe,
   ArrowRight,
+  Moon,
+  Sun,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -87,8 +89,32 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Right Action Controls: High Contrast, Dialect Badge, Auth */}
-          <div className="hidden md:flex items-center gap-2.5">
+          {/* Right Action Controls: Night Mode, High Contrast, Dialect Badge, Auth */}
+          <div className="hidden md:flex items-center gap-2">
+            {/* Night Mode Toggle Button */}
+            <button
+              onClick={() => updateSetting('theme', settings.theme === 'dark' ? 'light' : 'dark')}
+              className={`p-2 rounded-lg text-xs font-medium border transition-colors flex items-center gap-1.5 cursor-pointer ${
+                settings.theme === 'dark'
+                  ? 'bg-amber-400/10 text-amber-300 border-amber-500/40 hover:bg-amber-400/20'
+                  : 'border-[#E5E5E5] text-[#555555] hover:text-black hover:bg-[#F7F7F7]'
+              }`}
+              title={settings.theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Night Mode'}
+              aria-label="Toggle Night Mode"
+            >
+              {settings.theme === 'dark' ? (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="text-[11px] font-mono">Day</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-3.5 h-3.5 text-[#555555]" />
+                  <span className="text-[11px] font-mono">Night</span>
+                </>
+              )}
+            </button>
+
             {/* High Contrast Toggle Button */}
             <button
               onClick={() => updateSetting('highContrast', !settings.highContrast)}
@@ -160,8 +186,16 @@ export const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* Mobile Menu Hamburger Button */}
-          <div className="flex items-center gap-2 xl:hidden">
+          {/* Mobile Menu Actions & Hamburger */}
+          <div className="flex items-center gap-1.5 xl:hidden">
+            <button
+              onClick={() => updateSetting('theme', settings.theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 text-[#444444] hover:text-black md:hidden"
+              aria-label="Toggle Night Mode"
+              title="Toggle Night Mode"
+            >
+              {settings.theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
+            </button>
             <button
               onClick={() => updateSetting('highContrast', !settings.highContrast)}
               className="p-2 text-[#444444] hover:text-black md:hidden"
@@ -206,6 +240,28 @@ export const Navbar: React.FC = () => {
           </div>
 
           <div className="pt-3 border-t border-[#E5E5E5] flex flex-col gap-2">
+            <div className="flex items-center justify-between px-1">
+              <span className="text-xs text-[#777777] font-mono">Theme:</span>
+              <button
+                onClick={() =>
+                  updateSetting('theme', settings.theme === 'dark' ? 'light' : 'dark')
+                }
+                className="px-2.5 py-1 text-xs rounded border border-black dark:border-white text-black dark:text-white font-mono font-medium flex items-center gap-1.5"
+              >
+                {settings.theme === 'dark' ? (
+                  <>
+                    <Sun className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Night Mode (Dark)</span>
+                  </>
+                ) : (
+                  <>
+                    <Moon className="w-3.5 h-3.5" />
+                    <span>Day Mode (Light)</span>
+                  </>
+                )}
+              </button>
+            </div>
+
             <div className="flex items-center justify-between px-1">
               <span className="text-xs text-[#777777] font-mono">Dialect:</span>
               <button
