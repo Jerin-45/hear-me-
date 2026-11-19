@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="10" fill="#000000" />
+  <rect x="1" y="1" width="46" height="46" rx="9" stroke="#333333" stroke-width="1" />
+  <!-- Minimalist Soundwave & Clarity Wave in Pure White & Light Gray -->
+  <circle cx="24" cy="24" r="14" stroke="#444444" stroke-width="1" stroke-dasharray="2 2" />
+  <path d="M14 24h3m4-6v12m4-16v20m4-12v4m4-7v10" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+  <circle cx="34" cy="24" r="2" fill="#FFFFFF" />
+</svg>
