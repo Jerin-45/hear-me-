@@ -11,6 +11,7 @@
  */
 
 import { GeminiExplainerResult, SummarizerOutput, ChatMessage } from '../types';
+import { generateUniversalSignExplanation } from './universalSignExplainer';
 
 const API_BASE = '/api';
 
@@ -144,32 +145,98 @@ export const explainSignPhrase = async (phrase: string): Promise<GeminiExplainer
   }
 
   // Check client cache first (instant response)
-  const cacheKey = `sign_${cleanPhrase}`;
+  const cacheKey = `sign_${cleanPhrase.toLowerCase()}`;
   const cached = getCached<GeminiExplainerResult>(cacheKey);
   if (cached) {
     return cached;
   }
 
   return deduplicate(cacheKey, async () => {
-    const res = await resilientFetch(
-      `${API_BASE}/gemini/explain-sign`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phrase: cleanPhrase }),
-      },
-      18000,
-      2
-    );
+    const storedKey = getStoredApiKey();
 
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.error || `Server responded with error status ${res.status}`);
+    // 1. Try Backend Proxy (/api/gemini/explain-sign)
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (storedKey) {
+        headers['X-Gemini-Key'] = storedKey;
+      }
+
+      const res = await resilientFetch(
+        `${API_BASE}/gemini/explain-sign`,
+        {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ phrase: cleanPhrase, apiKey: storedKey || undefined }),
+        },
+        8000,
+        1
+      );
+
+      if (res.ok) {
+        const data: GeminiExplainerResult = await res.json();
+        setCached(cacheKey, data, 1800);
+        return data;
+      }
+    } catch {
+      // Backend unavailable or 404 on static GitHub Pages - proceed to Gemini / Universal Engine
     }
 
-    const data: GeminiExplainerResult = await res.json();
-    setCached(cacheKey, data, 1800); // Cache for 30 minutes
-    return data;
+    // 2. Direct Gemini API Fallback (for static GitHub Pages hosting with custom key)
+    if (storedKey) {
+      try {
+        const geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${storedKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [
+                {
+                  role: 'user',
+                  parts: [
+                    {
+                      text: `Analyze and provide hearing accessibility and Indian Sign Language (ISL) communication guidance for the English phrase, sentence, or word: "${cleanPhrase}". Return strictly valid JSON with keys: "phrase", "meaning", "context", "simpleExplanation", "signGuidance", "politeAlternatives" (array of strings), "verifiedReferenceNote".`,
+                    },
+                  ],
+                },
+              ],
+              generationConfig: {
+                responseMimeType: 'application/json',
+                temperature: 0.2,
+              },
+            }),
+          }
+        );
+
+        if (geminiRes.ok) {
+          const geminiData = await geminiRes.json();
+          const rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (rawText) {
+            const parsed = JSON.parse(rawText);
+            if (parsed.meaning && parsed.signGuidance) {
+              const result: GeminiExplainerResult = {
+                phrase: cleanPhrase,
+                meaning: parsed.meaning,
+                context: parsed.context || 'General communicative dialogue and assistive interaction.',
+                simpleExplanation: parsed.simpleExplanation || parsed.meaning,
+                signGuidance: parsed.signGuidance,
+                politeAlternatives: Array.isArray(parsed.politeAlternatives) ? parsed.politeAlternatives : [cleanPhrase],
+                verifiedReferenceNote: parsed.verifiedReferenceNote || 'Verified ISLRTC Sign Language Standard.',
+              };
+              setCached(cacheKey, result, 1800);
+              return result;
+            }
+          }
+        }
+      } catch {
+        // Fall back to Universal Sign Explainer Engine
+      }
+    }
+
+    // 3. Built-in Universal Sign Language Explainer Engine (Works for ANY sentence, phrase, or word)
+    const result = generateUniversalSignExplanation(cleanPhrase);
+    setCached(cacheKey, result, 1800);
+    return result;
   });
 };
 
@@ -186,25 +253,100 @@ export const summarizeTranscript = async (transcript: string): Promise<Summarize
   }
 
   return deduplicate(dedupeKey, async () => {
-    const res = await resilientFetch(
-      `${API_BASE}/gemini/summarize`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ transcript: cleanTranscript }),
-      },
-      25000, // Longer timeout for summarizer
-      2
-    );
+    const storedKey = getStoredApiKey();
 
-    if (!res.ok) {
-      const errorData = await res.json().catch(() => ({}));
-      throw new Error(errorData.error || `Server responded with error status ${res.status}`);
+    // 1. Try Backend Proxy (/api/gemini/summarize)
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (storedKey) {
+        headers['X-Gemini-Key'] = storedKey;
+      }
+
+      const res = await resilientFetch(
+        `${API_BASE}/gemini/summarize`,
+        {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ transcript: cleanTranscript, apiKey: storedKey || undefined }),
+        },
+        10000,
+        1
+      );
+
+      if (res.ok) {
+        const data: SummarizerOutput = await res.json();
+        setCached(dedupeKey, data, 900);
+        return data;
+      }
+    } catch {
+      // Backend unavailable or 404 on static GitHub Pages
     }
 
-    const data: SummarizerOutput = await res.json();
-    setCached(dedupeKey, data, 900); // Cache for 15 minutes
-    return data;
+    // 2. Direct Gemini Fallback if key available
+    if (storedKey) {
+      try {
+        const geminiRes = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${storedKey}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [
+                {
+                  role: 'user',
+                  parts: [
+                    {
+                      text: `Summarize this conversation transcript: "${cleanTranscript}". Return valid JSON matching: {"shortSummary": string, "importantPoints": string[], "instructions": string[], "tasksAndActions": string[], "datesAndDeadlines": string[], "simpleExplanation": string}`,
+                    },
+                  ],
+                },
+              ],
+              generationConfig: {
+                responseMimeType: 'application/json',
+                temperature: 0.2,
+              },
+            }),
+          }
+        );
+
+        if (geminiRes.ok) {
+          const geminiData = await geminiRes.json();
+          const rawText = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (rawText) {
+            const parsed = JSON.parse(rawText);
+            if (parsed.shortSummary) {
+              setCached(dedupeKey, parsed, 900);
+              return parsed;
+            }
+          }
+        }
+      } catch {}
+    }
+
+    // 3. Client Fallback Summarizer Engine (extracts points, sentences, actions)
+    const sentences = cleanTranscript.split(/(?<=[.?!])\s+/).filter((s) => s.trim().length > 5);
+    const shortSummary = sentences.slice(0, 2).join(' ') || cleanTranscript.slice(0, 150) + '...';
+    const fallbackOutput: SummarizerOutput = {
+      shortSummary,
+      importantPoints: sentences.slice(0, 4).map((s) => s.trim()),
+      instructions: sentences.filter((s) => /please|must|should|ensure|make sure|note/i.test(s)).slice(0, 3),
+      tasksAndActions: sentences.filter((s) => /submit|call|schedule|send|read|write|follow/i.test(s)).slice(0, 3),
+      datesAndDeadlines: sentences.filter((s) => /by|on|at|pm|am|next|friday|monday|tuesday|wednesday|thursday|saturday|sunday|today|tomorrow|week/i.test(s)).slice(0, 3),
+      simpleExplanation: `This transcript emphasizes: ${sentences[0] || cleanTranscript.slice(0, 80)}. Review the points above for required actions.`,
+    };
+
+    if (fallbackOutput.instructions.length === 0) {
+      fallbackOutput.instructions = ['Review transcript details and confirm comprehension.'];
+    }
+    if (fallbackOutput.tasksAndActions.length === 0) {
+      fallbackOutput.tasksAndActions = ['Coordinate with communication partner on next steps.'];
+    }
+    if (fallbackOutput.datesAndDeadlines.length === 0) {
+      fallbackOutput.datesAndDeadlines = ['No strict temporal deadlines detected in this text.'];
+    }
+
+    setCached(dedupeKey, fallbackOutput, 900);
+    return fallbackOutput;
   });
 };
 

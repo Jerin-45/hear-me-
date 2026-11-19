@@ -18,6 +18,7 @@ import { geminiCircuitBreaker } from '../utils/circuitBreaker.ts';
 import { heavyAiQueue } from '../utils/asyncQueue.ts';
 import { eventBus } from '../utils/eventBus.ts';
 import { validateExplainSign, validateSummarize, validateChat } from '../middleware/validation.ts';
+import { generateUniversalSignExplanation } from '../utils/universalSignExplainer.ts';
 
 export const geminiRouter = express.Router();
 
@@ -62,23 +63,14 @@ geminiRouter.post('/explain-sign', validateExplainSign, async (req: Request, res
 
   res.setHeader('X-Cache', 'MISS');
 
-  // Fallback educational result for common terms or when API is offline
-  const getFallbackResult = () => ({
-    phrase,
-    meaning: `The phrase "${phrase}" is commonly used in English daily communication.`,
-    context: 'Used during interpersonal conversations, classrooms, public counters, or assistive dialogue.',
-    simpleExplanation: `In accessible communication, "${phrase}" expresses a direct and clear sentiment. When communicating with deaf or hard-of-hearing individuals, accompany this phrase with clear facial expressions, steady eye contact, and open body language.`,
-    signGuidance: `In Indian Sign Language (ISL), this concept is conveyed using deliberate hand shape, location, and natural facial non-manual markers. Always sign steadily at chest or face level without rushing.`,
-    politeAlternatives: [
-      `Could I please ask regarding: ${phrase}`,
-      `Excuse me, ${phrase}`,
-      `Pardon me, could you clarify: ${phrase}`,
-    ],
-    verifiedReferenceNote: 'Verified ISLRTC references should be consulted for formal Indian Sign Language certification.',
-  });
+  // Support client dynamic key or server environment key
+  const clientApiKey = (req.headers['x-gemini-key'] as string) || req.body.apiKey;
+  const activeGenAI = clientApiKey
+    ? new GoogleGenerativeAI(clientApiKey)
+    : genAI;
 
-  if (!genAI) {
-    const fallback = getFallbackResult();
+  if (!activeGenAI) {
+    const fallback = generateUniversalSignExplanation(phrase);
     signExplainerCache.set(phrase, fallback, 1800);
     return res.json(fallback);
   }
@@ -87,7 +79,7 @@ geminiRouter.post('/explain-sign', validateExplainSign, async (req: Request, res
     // Execute through Circuit Breaker to protect against upstream outages
     const explanationResult = await geminiCircuitBreaker.execute(
       async () => {
-        const model = genAI.getGenerativeModel({
+        const model = activeGenAI.getGenerativeModel({
           model: 'gemini-1.5-flash',
           generationConfig: {
             responseMimeType: 'application/json',
@@ -96,32 +88,24 @@ geminiRouter.post('/explain-sign', validateExplainSign, async (req: Request, res
           systemInstruction:
             'You are an expert hearing accessibility educator and English communication specialist for HearMe AI. ' +
             'CRITICAL RULE: The entire response MUST BE IN ENGLISH ONLY. Do not use Hindi, Tamil, or any other language. ' +
-            'Provide accurate, polite, accessible explanations. Emphasize Indian Sign Language (ISL) context where applicable. ' +
-            'Do not claim that text replaces certified sign language lessons. Output strictly valid JSON matching this schema: ' +
+            'Provide accurate, polite, accessible explanations. Emphasize Indian Sign Language (ISL) context and kinetic hand guidance for any English sentence, phrase, or word. ' +
+            'Output strictly valid JSON matching this schema: ' +
             '{"phrase": string, "meaning": string, "context": string, "simpleExplanation": string, "signGuidance": string, "politeAlternatives": string[], "verifiedReferenceNote": string}',
         });
 
-        const prompt = `Analyze and provide hearing accessibility and sign-language communication guidance for the English phrase: "${phrase}".`;
+        const prompt = `Analyze and provide hearing accessibility and sign-language communication guidance for the English phrase, sentence, or word: "${phrase}".`;
         const result = await model.generateContent(prompt);
         const text = result.response.text();
         const parsed = extractJsonFromText(text);
 
-        if (parsed) {
+        if (parsed && parsed.meaning && parsed.signGuidance) {
           return parsed;
         } else {
-          return {
-            phrase,
-            meaning: 'Expressed meaning in conversational English.',
-            context: 'Daily interaction and accessible dialogue.',
-            simpleExplanation: text,
-            signGuidance: 'Observe clean hand shapes and respectful eye contact.',
-            politeAlternatives: ['Could you please assist?', 'Thank you for your time.'],
-            verifiedReferenceNote: 'Reference Indian Sign Language Research and Training Centre (ISLRTC) standards.',
-          };
+          return generateUniversalSignExplanation(phrase);
         }
       },
       // Circuit Breaker Fallback
-      () => getFallbackResult()
+      () => generateUniversalSignExplanation(phrase)
     );
 
     // Store in Cache
