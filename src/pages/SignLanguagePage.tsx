@@ -8,10 +8,13 @@ import {
   Check,
   Image as ImageIcon,
   Layers,
+  Play,
+  Sparkles,
 } from 'lucide-react';
 import { SIGN_LANGUAGE_CARDS } from '../data/signLanguageData';
 import { SignCategory } from '../types';
 import { SignVisualIllustration } from '../components/SignVisualIllustration';
+import { SignAnimation } from '../components/SignAnimation';
 import { getAssetUrl } from '../utils/assets';
 
 const CATEGORIES: ('All' | SignCategory)[] = [
@@ -28,7 +31,7 @@ const CATEGORIES: ('All' | SignCategory)[] = [
 export const SignLanguagePage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<'All' | SignCategory>('All');
-  const [viewMode, setViewMode] = useState<'photos' | 'diagrams'>('photos');
+  const [viewMode, setViewMode] = useState<'animated' | 'photos' | 'diagrams'>('animated');
   const [showChartModal, setShowChartModal] = useState(false);
 
   const [favoriteIds, setFavoriteIds] = useState<string[]>(() => {
@@ -160,6 +163,17 @@ export const SignLanguagePage: React.FC = () => {
             {/* Visual View Mode Toggle */}
             <div className="flex items-center gap-1 p-1 rounded-xl bg-white border border-[#E5E5E5] shrink-0 self-start sm:self-auto shadow-sm">
               <button
+                onClick={() => setViewMode('animated')}
+                className={`px-3 py-2 rounded-lg text-xs font-mono font-semibold transition-all flex items-center gap-1.5 ${
+                  viewMode === 'animated'
+                    ? 'bg-black text-white shadow-sm'
+                    : 'text-[#666666] hover:text-black'
+                }`}
+              >
+                <Play className="w-3.5 h-3.5 fill-current" />
+                <span>Animated Signs</span>
+              </button>
+              <button
                 onClick={() => setViewMode('photos')}
                 className={`px-3 py-2 rounded-lg text-xs font-mono font-semibold transition-all flex items-center gap-1.5 ${
                   viewMode === 'photos'
@@ -237,19 +251,27 @@ export const SignLanguagePage: React.FC = () => {
                       )}
                     </div>
 
-                    {/* Sign Visual: Photo or Vector Diagram */}
-                    <div className="rounded-xl overflow-hidden mb-4 border border-[#E5E5E5] bg-white h-40 flex items-center justify-center p-2">
-                      {viewMode === 'photos' && card.imageSrc ? (
+                    {/* Sign Visual: Animated ISL Gesture, Reference Photo, or Vector Diagram */}
+                    {viewMode === 'animated' ? (
+                      <SignAnimation
+                        signId={card.id}
+                        visualType={card.svgVisualType}
+                        className="w-full h-44 mb-4"
+                      />
+                    ) : viewMode === 'photos' && card.imageSrc ? (
+                      <div className="rounded-xl overflow-hidden mb-4 border border-[#E5E5E5] bg-white h-44 flex items-center justify-center p-2">
                         <img
                           src={getAssetUrl(card.imageSrc)}
                           alt={`Sign for ${card.phrase}`}
                           className="w-full h-full object-contain hover:scale-105 transition-transform"
                           loading="lazy"
                         />
-                      ) : (
+                      </div>
+                    ) : (
+                      <div className="rounded-xl overflow-hidden mb-4 border border-[#E5E5E5] bg-white h-44 flex items-center justify-center p-2">
                         <SignVisualIllustration type={card.svgVisualType} className="w-full h-full object-contain" />
-                      )}
-                    </div>
+                      </div>
+                    )}
 
                     {/* Word & Meaning */}
                     <h3 className="text-lg font-bold text-black tracking-tight">
