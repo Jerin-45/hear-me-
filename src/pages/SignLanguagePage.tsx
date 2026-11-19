@@ -12,6 +12,7 @@ import {
 import { SIGN_LANGUAGE_CARDS } from '../data/signLanguageData';
 import { SignCategory } from '../types';
 import { SignVisualIllustration } from '../components/SignVisualIllustration';
+import { getAssetUrl } from '../utils/assets';
 
 const CATEGORIES: ('All' | SignCategory)[] = [
   'All',
@@ -240,7 +241,7 @@ export const SignLanguagePage: React.FC = () => {
                     <div className="rounded-xl overflow-hidden mb-4 border border-[#E5E5E5] bg-white h-40 flex items-center justify-center p-2">
                       {viewMode === 'photos' && card.imageSrc ? (
                         <img
-                          src={card.imageSrc}
+                          src={getAssetUrl(card.imageSrc)}
                           alt={`Sign for ${card.phrase}`}
                           className="w-full h-full object-contain hover:scale-105 transition-transform"
                           loading="lazy"
@@ -342,7 +343,7 @@ export const SignLanguagePage: React.FC = () => {
 
               <div className="rounded-xl overflow-hidden border border-[#E5E5E5] bg-white p-2">
                 <img
-                  src="/images/signs-reference-chart.jpg"
+                  src={getAssetUrl('/images/signs-reference-chart.jpg')}
                   alt="Full 20 Signs Reference Chart"
                   className="w-full h-auto object-contain mx-auto"
                 />

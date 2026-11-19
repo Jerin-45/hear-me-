@@ -11,6 +11,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { getAssetUrl } from '../utils/assets';
 
 // 21-point Hand Landmarks for 4 distinct gestures
 interface LandmarkPoint {
@@ -484,7 +485,7 @@ export const HeroInteractiveShowcase: React.FC = () => {
             <div className="grid grid-cols-2 gap-3 items-center">
               <div className="rounded-xl overflow-hidden border border-[#E5E5E5] bg-white p-2 h-36 flex items-center justify-center">
                 <img
-                  src={currentGesture.imageSrc}
+                  src={getAssetUrl(currentGesture.imageSrc)}
                   alt={`Sign for ${currentGesture.name}`}
                   className="w-full h-full object-contain hover:scale-105 transition-transform"
                 />

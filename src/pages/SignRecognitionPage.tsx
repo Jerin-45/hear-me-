@@ -23,6 +23,7 @@ import {
 import { GestureDetectionResult } from '../types';
 import { speakEnglishText } from '../services/speech';
 import { SignVisualIllustration } from '../components/SignVisualIllustration';
+import { getAssetUrl } from '../utils/assets';
 
 export const SignRecognitionPage: React.FC = () => {
   // Camera & Stream States
@@ -794,7 +795,7 @@ export const SignRecognitionPage: React.FC = () => {
                   <div className="w-full h-28 rounded-lg overflow-hidden border border-[#E5E5E5] bg-white flex items-center justify-center p-1">
                     {item.imageSrc ? (
                       <img
-                        src={item.imageSrc}
+                        src={getAssetUrl(item.imageSrc)}
                         alt={`Sign gesture for ${item.name}`}
                         className="w-full h-full object-contain hover:scale-105 transition-transform"
                         loading="lazy"
@@ -839,7 +840,7 @@ export const SignRecognitionPage: React.FC = () => {
                 <div className="md:col-span-1 rounded-xl border border-[#E5E5E5] overflow-hidden bg-white p-2 flex items-center justify-center min-h-[180px]">
                   {selectedVocab.imageSrc ? (
                     <img
-                      src={selectedVocab.imageSrc}
+                      src={getAssetUrl(selectedVocab.imageSrc)}
                       alt={selectedVocab.name}
                       className="max-h-44 w-auto object-contain mx-auto"
                     />
@@ -901,7 +902,7 @@ export const SignRecognitionPage: React.FC = () => {
 
                 <div className="rounded-xl overflow-hidden border border-[#E5E5E5] bg-white p-2">
                   <img
-                    src="/images/signs-reference-chart.jpg"
+                    src={getAssetUrl('/images/signs-reference-chart.jpg')}
                     alt="Full 20 Signs Reference Chart"
                     className="w-full h-auto object-contain mx-auto"
                   />

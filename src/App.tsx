@@ -21,7 +21,7 @@ import { SettingsPage } from './pages/SettingsPage';
 
 export function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <AuthProvider>
         <SettingsProvider>
           <div className="flex flex-col min-h-screen bg-white text-black font-sans selection:bg-black selection:text-white">
