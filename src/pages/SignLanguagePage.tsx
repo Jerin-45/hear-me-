@@ -12,6 +12,7 @@ import {
 import { SIGN_LANGUAGE_CARDS } from '../data/signLanguageData';
 import { SignCategory } from '../types';
 import { SignVisualIllustration } from '../components/SignVisualIllustration';
+import { SignCardVisual } from '../components/SignCardVisual';
 import { getAssetUrl } from '../utils/assets';
 
 const CATEGORIES: ('All' | SignCategory)[] = [
@@ -237,19 +238,8 @@ export const SignLanguagePage: React.FC = () => {
                       )}
                     </div>
 
-                    {/* Sign Visual: Photo or Vector Diagram */}
-                    <div className="rounded-xl overflow-hidden mb-4 border border-[#E5E5E5] bg-white h-40 flex items-center justify-center p-2">
-                      {viewMode === 'photos' && card.imageSrc ? (
-                        <img
-                          src={getAssetUrl(card.imageSrc)}
-                          alt={`Sign for ${card.phrase}`}
-                          className="w-full h-full object-contain hover:scale-105 transition-transform"
-                          loading="lazy"
-                        />
-                      ) : (
-                        <SignVisualIllustration type={card.svgVisualType} className="w-full h-full object-contain" />
-                      )}
-                    </div>
+                    {/* Sign Visual: 2D physics-based animated illustration with controls */}
+                    <SignCardVisual card={card} viewMode={viewMode} />
 
                     {/* Word & Meaning */}
                     <h3 className="text-lg font-bold text-black tracking-tight">
