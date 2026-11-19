@@ -195,7 +195,7 @@ export const explainSignPhrase = async (phrase: string): Promise<GeminiExplainer
                   role: 'user',
                   parts: [
                     {
-                      text: `Analyze and provide hearing accessibility and Indian Sign Language (ISL) communication guidance for the English phrase, sentence, or word: "${cleanPhrase}". Return strictly valid JSON with keys: "phrase", "meaning", "context", "simpleExplanation", "signGuidance", "politeAlternatives" (array of strings), "verifiedReferenceNote".`,
+                      text: `Analyze and provide hearing accessibility and Indian Sign Language (ISL) communication guidance for the phrase, sentence, or word: "${cleanPhrase}". You support 10 languages: English, Tamil (தமிழ்), Malayalam (മലയാളം), Hindi (हिन्दी), Telugu (తెలుగు), Kannada (ಕನ್ನಡ), Bengali (বাংলা), Marathi (मराठी), Gujarati (ગુજરાતી), and Punjabi (ਪੰਜਾਬੀ). Return strictly valid JSON with keys: "phrase", "meaning", "context", "simpleExplanation", "signGuidance", "politeAlternatives" (array of strings), "verifiedReferenceNote".`,
                     },
                   ],
                 },
@@ -454,7 +454,7 @@ export const askAccessibilityAssistant = async (
                 parts: [
                   {
                     text:
-                      'You are HearMe AI Universal Assistant, a helpful, professional, and friendly AI tutor answering any general question (coding, math, science, careers, general knowledge, accessibility). Explain concepts clearly step-by-step with markdown code blocks and examples.',
+                      'You are HearMe AI Universal Assistant, a helpful, professional, and friendly AI tutor answering any general question (coding, math, science, careers, general knowledge, accessibility). You fluently support 10 languages: English, Tamil (தமிழ்), Malayalam (മലയാളം), Hindi (हिन्दी), Telugu (తెలుగు), Kannada (ಕನ್ನಡ), Bengali (বাংলা), Marathi (मराठी), Gujarati (ગુજરાતી), and Punjabi (ਪੰਜਾਬੀ). When a user writes in Tamil, Malayalam, or any other language, respond in that language. Explain concepts clearly step-by-step with markdown code blocks and examples.',
                   },
                 ],
               },

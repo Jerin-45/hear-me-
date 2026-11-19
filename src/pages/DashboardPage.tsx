@@ -36,7 +36,7 @@ export const DashboardPage: React.FC = () => {
   const tools = [
     {
       title: 'Live Caption Studio',
-      desc: 'Convert spoken English into readable captions in real time.',
+      desc: 'Convert spoken speech in 10 languages (Tamil, Malayalam, Hindi, English, etc.) into readable captions in real time.',
       path: '/captions',
       icon: Mic,
       tag: 'SPEECH-TO-TEXT',
@@ -64,7 +64,7 @@ export const DashboardPage: React.FC = () => {
     },
     {
       title: 'Text-to-Speech Communication',
-      desc: 'Convert typed English text into natural spoken voice audio.',
+      desc: 'Convert typed text in 10 languages into natural spoken voice audio with localized quick phrases.',
       path: '/communication',
       icon: Volume2,
       tag: 'SPEECH SYNTHESIS',
@@ -126,7 +126,7 @@ export const DashboardPage: React.FC = () => {
             </div>
             <div className="truncate">
               <span className="block font-semibold text-white truncate">{user?.displayName || 'Active User'}</span>
-              <span className="text-[10px] font-mono text-[#777777]">EN-Only Mode</span>
+              <span className="text-[10px] font-mono text-[#777777]">10 Languages Active</span>
             </div>
           </div>
         </div>

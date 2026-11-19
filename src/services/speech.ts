@@ -61,44 +61,49 @@ export const isSpeechSynthesisSupported = (): boolean => {
   return typeof window !== 'undefined' && 'speechSynthesis' in window;
 };
 
-export const getAvailableEnglishVoices = (): Promise<SpeechSynthesisVoice[]> => {
+export const getAllVoices = (): Promise<SpeechSynthesisVoice[]> => {
   return new Promise((resolve) => {
     if (!isSpeechSynthesisSupported()) {
       resolve([]);
       return;
     }
 
-    const filterEnglish = (voices: SpeechSynthesisVoice[]) => {
-      return voices.filter(
-        (v) =>
-          v.lang.toLowerCase().startsWith('en') ||
-          v.lang.toLowerCase().includes('en-in') ||
-          v.lang.toLowerCase().includes('en-us') ||
-          v.lang.toLowerCase().includes('en-gb')
-      );
-    };
-
     let voices = window.speechSynthesis.getVoices();
     if (voices.length > 0) {
-      resolve(filterEnglish(voices));
+      resolve(voices);
       return;
     }
 
     window.speechSynthesis.onvoiceschanged = () => {
-      voices = window.speechSynthesis.getVoices();
-      resolve(filterEnglish(voices));
+      resolve(window.speechSynthesis.getVoices());
     };
 
-    // Timeout fallback after 1 second
+    // Fallback timeout after 1 second
     setTimeout(() => {
-      resolve(filterEnglish(window.speechSynthesis.getVoices()));
+      resolve(window.speechSynthesis.getVoices());
     }, 1000);
   });
 };
 
-export const speakEnglishText = (
+export const getVoicesForLanguage = async (langCode: string = 'en-IN'): Promise<SpeechSynthesisVoice[]> => {
+  const all = await getAllVoices();
+  const prefix = langCode.split('-')[0].toLowerCase();
+  const matching = all.filter(
+    (v) =>
+      v.lang.toLowerCase() === langCode.toLowerCase() ||
+      v.lang.toLowerCase().startsWith(prefix)
+  );
+  return matching.length > 0 ? matching : all;
+};
+
+export const getAvailableEnglishVoices = async (): Promise<SpeechSynthesisVoice[]> => {
+  return getVoicesForLanguage('en-IN');
+};
+
+export const speakText = (
   text: string,
   options?: {
+    lang?: string;
     rate?: number;
     pitch?: number;
     voiceURI?: string;
@@ -112,16 +117,16 @@ export const speakEnglishText = (
   window.speechSynthesis.cancel(); // Stop any pending speech
 
   const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = 'en-US';
+  utterance.lang = options?.lang || 'en-IN';
   utterance.rate = options?.rate ?? 1.0;
   utterance.pitch = options?.pitch ?? 1.0;
 
   if (options?.voiceURI) {
     const voices = window.speechSynthesis.getVoices();
-    const selectedVoice = voices.find((v) => v.voiceURI === options.voiceURI);
-    if (selectedVoice) {
-      utterance.voice = selectedVoice;
-      utterance.lang = selectedVoice.lang;
+    const matchedVoice = voices.find((v) => v.voiceURI === options.voiceURI);
+    if (matchedVoice) {
+      utterance.voice = matchedVoice;
+      utterance.lang = matchedVoice.lang;
     }
   }
 
@@ -130,6 +135,20 @@ export const speakEnglishText = (
   if (options?.onError) utterance.onerror = options.onError;
 
   window.speechSynthesis.speak(utterance);
+};
+
+export const speakEnglishText = (
+  text: string,
+  options?: {
+    rate?: number;
+    pitch?: number;
+    voiceURI?: string;
+    onStart?: () => void;
+    onEnd?: () => void;
+    onError?: (err: any) => void;
+  }
+) => {
+  speakText(text, options);
 };
 
 export const stopSpeech = () => {

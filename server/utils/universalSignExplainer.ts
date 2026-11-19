@@ -21,25 +21,142 @@ export function generateUniversalSignExplanation(rawInput: string): GeminiExplai
   const lower = phrase.toLowerCase();
   const words = lower.replace(/[^\w\s]/g, ' ').split(/\s+/).filter(Boolean);
 
+  // Multilingual keyword matches across 10 languages
+  const isGreeting =
+    lower === 'hello' ||
+    lower === 'hi' ||
+    lower === 'hey' ||
+    lower.includes('வணக்கம்') ||
+    lower.includes('நல்வரவு') ||
+    lower.includes('நமஸ்காரம்') ||
+    lower.includes('സ്വാഗതം') ||
+    lower.includes('नमस्ते') ||
+    lower.includes('नमस्कार') ||
+    lower.includes('प्रणाम') ||
+    lower.includes('నమస్కారం') ||
+    lower.includes('నమస్తే') ||
+    lower.includes('ನಮಸ್ಕಾರ') ||
+    lower.includes('নমস্কার') ||
+    lower.includes('સત શ્રી અકાલ') ||
+    lower.includes('ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ') ||
+    lower.includes('sat sri akal') ||
+    lower.includes('vanakkam') ||
+    lower.includes('namaskaram') ||
+    lower.includes('namaste');
+
+  const isThanks =
+    lower.includes('thank') ||
+    lower.includes('thanks') ||
+    lower.includes('நன்றி') ||
+    lower.includes('மிக்க நன்றி') ||
+    lower.includes('നന്ദി') ||
+    lower.includes('വളരെ നന്ദി') ||
+    lower.includes('धन्यवाद') ||
+    lower.includes('शुक्रिया') ||
+    lower.includes('ధన్యవాదాలు') ||
+    lower.includes('ధన్యవాదం') ||
+    lower.includes('ಧನ್ಯವಾದಗಳು') ||
+    lower.includes('ಧನ್ಯವಾದ') ||
+    lower.includes('ধন্যবাদ') ||
+    lower.includes('ખૂબ આભાર') ||
+    lower.includes('આભાર') ||
+    lower.includes('ਧੰਨਵਾਦ') ||
+    lower.includes('nandri') ||
+    lower.includes('dhanyavad');
+
+  const isHelpOrEmergency =
+    lower.includes('emergency') ||
+    lower.includes('hospital') ||
+    lower.includes('doctor') ||
+    lower.includes('ambulance') ||
+    lower.includes('pain') ||
+    lower.includes('help') ||
+    lower.includes('உதவி') ||
+    lower.includes('மருத்துவமனை') ||
+    lower.includes('மருத்துவர்') ||
+    lower.includes('டாக்டர்') ||
+    lower.includes('வலியா') ||
+    lower.includes('சஹாயம்') ||
+    lower.includes('സഹായം') ||
+    lower.includes('ആശുപത്രി') ||
+    lower.includes('ഡോക്ടർ') ||
+    lower.includes('വേദന') ||
+    lower.includes('मदद') ||
+    lower.includes('सहायता') ||
+    lower.includes('अस्पताल') ||
+    lower.includes('डॉक्टर') ||
+    lower.includes('दर्द') ||
+    lower.includes('సహాయం') ||
+    lower.includes('ఆసుపత్రి') ||
+    lower.includes('వైద్యుడు') ||
+    lower.includes('ಸಹಾಯ') ||
+    lower.includes('ಆಸ್ಪತ್ರೆ') ||
+    lower.includes('ವೈದ್ಯರು') ||
+    lower.includes('সাহায্য') ||
+    lower.includes('হাসপাতাল') ||
+    lower.includes('ডাক্তার') ||
+    lower.includes('मदत') ||
+    lower.includes('रुग्णालय') ||
+    lower.includes('મદદ') ||
+    lower.includes('હોસ્પિટલ') ||
+    lower.includes('ਮਦਦ') ||
+    lower.includes('ਹਸਪਤਾਲ');
+
+  const isSlowOrListen =
+    lower.includes('speak slow') ||
+    lower.includes('speak slowly') ||
+    lower.includes('slowly') ||
+    lower.includes('மெதுவாக') ||
+    lower.includes('பதுക്കെ') ||
+    lower.includes('धीरे') ||
+    lower.includes('నెమ్మదిగా') ||
+    lower.includes('ನಿಧಾನವಾಗಿ') ||
+    lower.includes('আস্তে') ||
+    lower.includes('हळू') ||
+    lower.includes('ધીમે') ||
+    lower.includes('ਹੌਲੀ');
+
   // 1. GREETINGS & SOCIAL INTRODUCTIONS
-  if (lower === 'hello' || lower === 'hi' || lower === 'hey') {
+  if (isGreeting) {
     return {
       phrase,
-      meaning: 'A warm, universal conversational opening expressing friendly acknowledgment and readiness to interact.',
-      context: 'Used when initiating conversation in casual, professional, or educational environments.',
-      simpleExplanation: '"Hello" is used to greet someone, catch their visual attention, and establish a comfortable conversational connection.',
+      meaning: `A warm, respectful conversational opening expressing friendly greeting and readiness to interact across languages (${phrase}).`,
+      context: 'Used when initiating conversation in casual, professional, educational, or multilingual community environments.',
+      simpleExplanation: `"${phrase}" is used to greet someone respectfully, catch their visual attention, and establish a comfortable conversational connection.`,
       signGuidance:
-        '• ISL Handshape: Open right hand with fingers naturally together.\n' +
-        '• Location: Start near the forehead or temple.\n' +
-        '• Movement: Extend hand slightly outward toward the conversational partner in a gentle, welcoming waving arc.\n' +
+        '• ISL Handshape: Open right hand with fingers naturally together (or both palms pressed together in prayer for Namaste/Namaskaram).\n' +
+        '• Location: Start near forehead/chest level.\n' +
+        '• Movement: Extend hand slightly forward in a gentle, welcoming waving arc, or press palms together rising slightly at chest height.\n' +
         '• Palm Orientation: Palm facing forward toward the receiver.\n' +
         '• Facial Non-Manual Marker: Warm, authentic smile with relaxed, attentive eye contact.',
       politeAlternatives: [
         'Good day to you.',
+        'வணக்கம் / Namaskaram / Namaste.',
         'Pleased to see you.',
         'Warm greetings.',
       ],
       verifiedReferenceNote: 'Verified standard ISLRTC Social Greetings Lexicon (ISL-SOC-0101).',
+    };
+  }
+
+  if (isThanks) {
+    return {
+      phrase,
+      meaning: `A gracious social acknowledgment expressing gratitude and appreciation for assistance, kindness, or information (${phrase}).`,
+      context: 'Used after receiving help, concluding discussions, or acknowledging someone’s effort across all 10 languages.',
+      simpleExplanation: `"${phrase}" expresses heartfelt gratitude and respect to the person who helped or communicated with you.`,
+      signGuidance:
+        '• ISL Handshape: Flat open right hand with fingers together.\n' +
+        '• Location: Fingertips touch the chin or lips gently.\n' +
+        '• Movement: Move hand smoothly outward and forward in a downward arc toward the recipient.\n' +
+        '• Palm Orientation: Palm facing inward initially, tilting slightly upward as it moves forward.\n' +
+        '• Facial Non-Manual Marker: Sincere smile, slight respectful nod of the head.',
+      politeAlternatives: [
+        'I sincerely appreciate your help.',
+        'மிக்க நன்றி / വളരെ നന്ദി / बहुत धन्यवाद.',
+        'Thank you very much for your time and kindness.',
+      ],
+      verifiedReferenceNote: 'Standardized ISLRTC Social Courtesy Reference (ISL-CRT-004).',
     };
   }
 
@@ -70,29 +187,9 @@ export function generateUniversalSignExplanation(rawInput: string): GeminiExplai
     };
   }
 
-  if (lower.includes('thank') || lower.includes('thanks')) {
-    return {
-      phrase,
-      meaning: 'A gracious social acknowledgment expressing appreciation for assistance, kindness, or information.',
-      context: 'Used after receiving help, concluding discussions, or acknowledging someone’s effort.',
-      simpleExplanation: '"Thank you" expresses gratitude and respect to the person who helped or listened to you.',
-      signGuidance:
-        '• ISL Handshape: Flat open right hand with fingers together.\n' +
-        '• Location: Fingertips touch the chin or lips gently.\n' +
-        '• Movement: Move hand smoothly outward and forward in a downward arc toward the recipient.\n' +
-        '• Palm Orientation: Palm facing inward initially, tilting slightly upward as it moves forward.\n' +
-        '• Facial Non-Manual Marker: Sincere smile, slight respectful nod of the head.',
-      politeAlternatives: [
-        'I sincerely appreciate your help.',
-        'Thank you very much for your time.',
-        'Many thanks for your kind assistance.',
-      ],
-      verifiedReferenceNote: 'Standardized ISLRTC Social Courtesy Reference (ISL-CRT-004).',
-    };
-  }
-
   // 2. EMERGENCY & MEDICAL EXPRESSIONS
   if (
+    isHelpOrEmergency ||
     lower.includes('emergency') ||
     lower.includes('hospital') ||
     lower.includes('doctor') ||
@@ -130,7 +227,7 @@ export function generateUniversalSignExplanation(rawInput: string): GeminiExplai
   }
 
   // 3. DAILY ACCESSIBILITY & COMMUNICATION REQUESTS
-  if (lower.includes('speak slow') || lower.includes('speak slowly')) {
+  if (isSlowOrListen || lower.includes('speak slow') || lower.includes('speak slowly')) {
     return {
       phrase,
       meaning: 'A practical accessibility accommodation request asking the speaker to reduce their verbal tempo for clear lipreading.',

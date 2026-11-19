@@ -1,4 +1,17 @@
-export type EnglishDialect = 'en-IN' | 'en-US';
+export type SupportedLanguageCode =
+  | 'en-IN'
+  | 'ta-IN'
+  | 'ml-IN'
+  | 'hi-IN'
+  | 'te-IN'
+  | 'kn-IN'
+  | 'bn-IN'
+  | 'mr-IN'
+  | 'gu-IN'
+  | 'pa-IN'
+  | 'en-US';
+
+export type EnglishDialect = SupportedLanguageCode;
 
 export interface UserProfile {
   uid: string;

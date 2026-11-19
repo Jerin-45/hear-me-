@@ -16,7 +16,8 @@ import {
   Sun,
 } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
-import { speakEnglishText } from '../services/speech';
+import { speakText } from '../services/speech';
+import { TEN_LANGUAGES, getLanguageInfo } from '../services/languages';
 
 export const SettingsPage: React.FC = () => {
   const {
@@ -47,11 +48,14 @@ export const SettingsPage: React.FC = () => {
     }
   };
 
+  const currentLang = getLanguageInfo(settings.speechRecognitionDialect);
+
   const handleTestVoice = () => {
     setIsPlayingTestVoice(true);
-    speakEnglishText(
-      `Hello. Testing HearMe AI text-to-speech at ${settings.ttsSpeed.toFixed(1)} times speed.`,
+    speakText(
+      currentLang.sampleTestSpeech || `Testing HearMe AI speech synthesis.`,
       {
+        lang: currentLang.code,
         rate: settings.ttsSpeed,
         pitch: settings.ttsPitch,
         voiceURI: settings.ttsVoiceURI,
@@ -232,44 +236,49 @@ export const SettingsPage: React.FC = () => {
           </div>
         </div>
 
-        {/* 3. Speech Section */}
+        {/* 3. Speech & Language Section */}
         <div className="p-6 sm:p-8 rounded-2xl bg-white border border-[#E5E5E5] space-y-6">
           <div className="pb-3 border-b border-[#E5E5E5]">
             <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-black">
-              3. Speech & Dialect
+              3. Multilingual Speech & Recognition (10 Languages)
             </h2>
-            <p className="text-xs text-[#777777]">Speech recognition accent tuning and TTS speed</p>
+            <p className="text-xs text-[#777777]">
+              Configure platform language for Live Captions, Text-to-Speech, and communication assistance.
+            </p>
           </div>
 
-          {/* Preferred English Dialect */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          {/* 10 Supported Languages Grid */}
+          <div className="space-y-3">
             <div>
-              <span className="text-xs sm:text-sm font-bold text-black block">Recognition Dialect</span>
+              <span className="text-xs sm:text-sm font-bold text-black block">Active Language</span>
               <span className="text-xs text-[#666666]">
-                Acoustic model tuning for Indian vs US English pronunciation.
+                Select from 10 supported languages including Tamil, Malayalam, Hindi, Telugu, and English.
               </span>
             </div>
-            <div className="flex items-center gap-1 border border-[#E5E5E5] rounded-lg p-1 font-mono text-xs">
-              <button
-                onClick={() => updateSetting('speechRecognitionDialect', 'en-IN')}
-                className={`px-3 py-1.5 rounded font-semibold transition-colors ${
-                  settings.speechRecognitionDialect === 'en-IN'
-                    ? 'bg-black text-white'
-                    : 'text-[#555555] hover:text-black'
-                }`}
-              >
-                English (India)
-              </button>
-              <button
-                onClick={() => updateSetting('speechRecognitionDialect', 'en-US')}
-                className={`px-3 py-1.5 rounded font-semibold transition-colors ${
-                  settings.speechRecognitionDialect === 'en-US'
-                    ? 'bg-black text-white'
-                    : 'text-[#555555] hover:text-black'
-                }`}
-              >
-                English (US)
-              </button>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+              {TEN_LANGUAGES.map((lang) => {
+                const active = settings.speechRecognitionDialect === lang.code;
+                return (
+                  <button
+                    key={lang.code}
+                    onClick={() => updateSetting('speechRecognitionDialect', lang.code)}
+                    className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+                      active
+                        ? 'bg-black text-white border-black shadow-sm'
+                        : 'bg-white text-black border-[#D4D4D4] hover:border-black hover:bg-[#F7F7F7]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-base">{lang.flag}</span>
+                      {active && <Check className="w-3.5 h-3.5 text-white" />}
+                    </div>
+                    <span className="font-bold text-xs block mt-1.5">{lang.nativeName}</span>
+                    <span className={`text-[10px] font-mono block ${active ? 'text-[#D4D4D4]' : 'text-[#777777]'}`}>
+                      {lang.name}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 

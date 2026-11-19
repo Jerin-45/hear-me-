@@ -20,12 +20,12 @@ export const Footer: React.FC = () => {
             </div>
             
             <p className="text-xs sm:text-sm text-[#555555] max-w-md leading-relaxed">
-              <strong>Communication Without Barriers.</strong> A formal, minimal AI accessibility platform providing real-time English speech captions, authentic sign language learning, experimental gesture recognition, and accessible communication tools.
+              <strong>Communication Without Barriers.</strong> A formal, minimal AI accessibility platform providing real-time multilingual speech captions in 10 languages (including Tamil, Malayalam, Hindi, and English), authentic sign language learning, experimental gesture recognition, and accessible communication tools.
             </p>
 
             <div className="flex flex-wrap gap-2 pt-1 font-mono text-[11px]">
               <span className="px-2.5 py-1 border border-[#E5E5E5] rounded text-[#444444]">
-                EN-ONLY (`en-IN` & `en-US`)
+                10 LANGUAGES (தமிழ் • മലയാളം • हिन्दी • English + 6 more)
               </span>
               <span className="px-2.5 py-1 border border-[#E5E5E5] rounded text-[#444444]">
                 WCAG AAA COMPLIANT

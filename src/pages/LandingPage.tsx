@@ -56,11 +56,11 @@ export const LandingPage: React.FC = () => {
 
   const featureCards = [
     {
-      title: 'Live Captions',
-      desc: 'Convert spoken English into clear, high-contrast readable captions with dialect support (en-IN & en-US).',
+      title: 'Live Captions (10 Languages)',
+      desc: 'Convert spoken Tamil, Malayalam, Hindi, English, and 6 other Indian languages into clear readable captions in real time.',
       icon: Mic,
       path: '/captions',
-      badge: 'Web Speech API',
+      badge: '10 Languages Supported',
     },
     {
       title: 'Sign Language Learning',
@@ -71,10 +71,10 @@ export const LandingPage: React.FC = () => {
     },
     {
       title: 'AI Sign Explainer',
-      desc: 'Understand the conversational nuance, respectful context, and visual sign guidance for any English phrase.',
+      desc: 'Understand conversational nuance, respectful context, and visual sign guidance for phrases in Tamil, Malayalam, Hindi, English, etc.',
       icon: Sparkles,
       path: '/sign-explainer',
-      badge: 'Gemini AI',
+      badge: 'Multilingual Gemini AI',
     },
     {
       title: 'Gesture Recognition',
@@ -84,8 +84,8 @@ export const LandingPage: React.FC = () => {
       badge: 'MediaPipe Hands',
     },
     {
-      title: 'Text-to-Speech',
-      desc: 'Type English messages and synthesize natural spoken audio with instant phrase chips and speech rate adjustment.',
+      title: 'Text-to-Speech (10 Languages)',
+      desc: 'Type messages in Tamil, Malayalam, Hindi, English, etc., and vocalize natural speech with localized everyday phrases.',
       icon: Volume2,
       path: '/communication',
       badge: 'SpeechSynthesis',
@@ -321,7 +321,7 @@ export const LandingPage: React.FC = () => {
                   Capture
                 </h3>
                 <p className="text-xs sm:text-sm text-[#666666] leading-relaxed">
-                  Convert spoken English into readable captions in real time using the native Web Speech API.
+                  Convert speech across 10 languages (Tamil, Malayalam, Hindi, English, etc.) into readable captions in real time.
                 </p>
               </div>
               <div className="mt-8 pt-4 border-t border-[#E5E5E5] text-[11px] font-mono text-[#777777]">
@@ -357,7 +357,7 @@ export const LandingPage: React.FC = () => {
                   Communicate
                 </h3>
                 <p className="text-xs sm:text-sm text-[#666666] leading-relaxed">
-                  Type messages and convert them into spoken English, or summarize complex meeting transcripts into tasks.
+                  Type messages and vocalize them in 10 languages, or summarize complex meeting transcripts into tasks.
                 </p>
               </div>
               <div className="mt-8 pt-4 border-t border-[#E5E5E5] text-[11px] font-mono text-[#777777]">

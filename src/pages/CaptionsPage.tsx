@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useSettings } from '../contexts/SettingsContext';
 import { isSpeechRecognitionSupported, createSpeechRecognitionInstance, ISpeechRecognition } from '../services/speech';
+import { TEN_LANGUAGES, getLanguageInfo } from '../services/languages';
 
 export const CaptionsPage: React.FC = () => {
   const { settings, updateSetting, saveTranscript, getFontSizeClass } = useSettings();
@@ -219,39 +220,36 @@ export const CaptionsPage: React.FC = () => {
               </h1>
             </div>
             <p className="text-xs text-[#666666] mt-1 font-mono">
-              REAL-TIME ENGLISH SPEECH-TO-TEXT • ACCESSIBLE TYPOGRAPHY
+              REAL-TIME MULTILINGUAL SPEECH-TO-TEXT (10 LANGUAGES) • ACCESSIBLE TYPOGRAPHY
             </p>
           </div>
 
           {/* Dialect & Contrast Buttons */}
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center rounded-lg border border-[#E5E5E5] bg-[#F7F7F7] p-1 font-mono text-xs">
-              <button
-                onClick={() => {
-                  if (isListening) stopListening();
-                  updateSetting('speechRecognitionDialect', 'en-IN');
+            {/* 10-Language Selector */}
+            <div className="flex items-center gap-1.5 rounded-lg border border-[#E5E5E5] bg-[#F7F7F7] px-2.5 py-1.5 font-mono text-xs">
+              <Globe className="w-3.5 h-3.5 text-emerald-600" />
+              <select
+                value={settings.speechRecognitionDialect}
+                onChange={(e) => {
+                  const newCode = e.target.value as any;
+                  if (isListening) {
+                    stopListening();
+                    updateSetting('speechRecognitionDialect', newCode);
+                    setTimeout(() => startListening(), 250);
+                  } else {
+                    updateSetting('speechRecognitionDialect', newCode);
+                  }
                 }}
-                className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${
-                  settings.speechRecognitionDialect === 'en-IN'
-                    ? 'bg-black text-white'
-                    : 'text-[#666666] hover:text-black'
-                }`}
+                className="bg-transparent text-xs font-semibold text-black focus:outline-none cursor-pointer"
+                title="Select Speech Recognition Language (10 Languages)"
               >
-                EN (India)
-              </button>
-              <button
-                onClick={() => {
-                  if (isListening) stopListening();
-                  updateSetting('speechRecognitionDialect', 'en-US');
-                }}
-                className={`px-3 py-1 rounded text-xs font-semibold transition-colors ${
-                  settings.speechRecognitionDialect === 'en-US'
-                    ? 'bg-black text-white'
-                    : 'text-[#666666] hover:text-black'
-                }`}
-              >
-                EN (US)
-              </button>
+                {TEN_LANGUAGES.map((l) => (
+                  <option key={l.code} value={l.code}>
+                    {l.flag} {l.nativeName} ({l.name})
+                  </option>
+                ))}
+              </select>
             </div>
 
             <button

@@ -86,14 +86,14 @@ geminiRouter.post('/explain-sign', validateExplainSign, async (req: Request, res
             temperature: 0.2,
           },
           systemInstruction:
-            'You are an expert hearing accessibility educator and English communication specialist for HearMe AI. ' +
-            'CRITICAL RULE: The entire response MUST BE IN ENGLISH ONLY. Do not use Hindi, Tamil, or any other language. ' +
-            'Provide accurate, polite, accessible explanations. Emphasize Indian Sign Language (ISL) context and kinetic hand guidance for any English sentence, phrase, or word. ' +
+            'You are an expert hearing accessibility educator and communication specialist for HearMe AI. ' +
+            'MULTILINGUAL SUPPORT: You support 10 languages: English, Tamil (தமிழ்), Malayalam (മലയാളം), Hindi (हिन्दी), Telugu (తెలుగు), Kannada (ಕನ್ನಡ), Bengali (বাংলা), Marathi (मराठी), Gujarati (ગુજરાતી), and Punjabi (ਪੰਜਾਬੀ). ' +
+            'Provide accurate, polite, accessible explanations. Emphasize Indian Sign Language (ISL) context and kinetic hand guidance for any sentence, phrase, or word in any of these languages. ' +
             'Output strictly valid JSON matching this schema: ' +
             '{"phrase": string, "meaning": string, "context": string, "simpleExplanation": string, "signGuidance": string, "politeAlternatives": string[], "verifiedReferenceNote": string}',
         });
 
-        const prompt = `Analyze and provide hearing accessibility and sign-language communication guidance for the English phrase, sentence, or word: "${phrase}".`;
+        const prompt = `Analyze and provide hearing accessibility and sign-language communication guidance for the phrase, sentence, or word: "${phrase}".`;
         const result = await model.generateContent(prompt);
         const text = result.response.text();
         const parsed = extractJsonFromText(text);
@@ -254,8 +254,10 @@ const UNIVERSAL_SYSTEM_INSTRUCTION =
   'You are HearMe AI Universal Assistant, an advanced, highly intelligent, friendly, and professional AI tutor and general-purpose assistant. ' +
   'CAPABILITIES: ' +
   'You answer questions across all general topics without restriction, including Computer Science, Programming & Coding (Python, Java, JavaScript, TypeScript, C++, SQL, web dev, etc.), Mathematics, Science (Physics, Chemistry, Biology), Artificial Intelligence & Machine Learning, Technology & Cloud Computing, General Knowledge, History, Geography, Health & Fitness (general wellness), Career Guidance & Interview Preparation, Business, Entrepreneurship, English Grammar & Communication Skills, Everyday Life Questions, as well as Hearing Accessibility, Indian Sign Language (ISL), and Disability Awareness. ' +
+  'MULTILINGUAL FLUENCY: ' +
+  'You fluently understand and respond in 10 languages: English, Tamil (தமிழ்), Malayalam (മലയാളം), Hindi (हिन्दी), Telugu (తెలుగు), Kannada (ಕನ್ನಡ), Bengali (বাংলা), Marathi (मराठी), Gujarati (ગુજરાતી), and Punjabi (ਪੰਜਾਬੀ). When a user writes in or asks for one of these languages (e.g. Tamil or Malayalam), respond natively, respectfully, and accurately in that language. Otherwise respond in English. ' +
   'RULES: ' +
-  '1. Respond in clear, accessible, and grammatically correct English. ' +
+  '1. Respond clearly and accessibly with proper grammar. ' +
   '2. Explain complex concepts step by step in beginner-friendly language, using examples, analogies, or practical illustrations. ' +
   '3. When asked for code, write clean, well-commented, complete, and functional code formatted in markdown code blocks with language identifiers (e.g. ```python, ```java). ' +
   '4. For mathematics or logical problems, show the step-by-step working before stating the final solution. ' +

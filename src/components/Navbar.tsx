@@ -17,16 +17,22 @@ import {
   ArrowRight,
   Moon,
   Sun,
+  ChevronDown,
+  Check,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
+import { TEN_LANGUAGES, getLanguageInfo } from '../services/languages';
 
 export const Navbar: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { settings, updateSetting } = useSettings();
+
+  const currentLang = getLanguageInfo(settings.speechRecognitionDialect);
 
   const handleLogout = async () => {
     await logout();
@@ -130,21 +136,58 @@ export const Navbar: React.FC = () => {
               <span className="text-[11px] font-mono">{settings.highContrast ? 'Contrast ON' : 'Contrast'}</span>
             </button>
 
-            {/* English Dialect Selector */}
-            <button
-              onClick={() =>
-                updateSetting(
-                  'speechRecognitionDialect',
-                  settings.speechRecognitionDialect === 'en-IN' ? 'en-US' : 'en-IN'
-                )
-              }
-              className="px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium border border-[#E5E5E5] text-[#444444] hover:text-black hover:border-black transition-colors flex items-center gap-1.5"
-              title="Switch English Dialect (India / US)"
-              aria-label="Switch English Dialect"
-            >
-              <Globe className="w-3.5 h-3.5" />
-              <span>{settings.speechRecognitionDialect === 'en-IN' ? 'EN (India)' : 'EN (US)'}</span>
-            </button>
+            {/* 10-Language Selector Dropdown */}
+            <div className="relative">
+              <button
+                onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                className="px-2.5 py-1.5 rounded-lg text-xs font-mono font-medium border border-[#E5E5E5] text-[#444444] hover:text-black hover:border-black transition-colors flex items-center gap-1.5 cursor-pointer bg-white"
+                title="Select Platform Language (10 Languages: Tamil, Malayalam, Hindi, Telugu, English & more)"
+                aria-label="Select Language"
+                aria-expanded={langDropdownOpen}
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span className="font-semibold">{currentLang.nativeName}</span>
+                <ChevronDown className="w-3 h-3 opacity-60" />
+              </button>
+
+              {langDropdownOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setLangDropdownOpen(false)}
+                  />
+                  <div className="absolute right-0 mt-1.5 w-60 rounded-xl border border-[#E5E5E5] bg-white shadow-xl z-50 py-1.5 max-h-80 overflow-y-auto animate-in fade-in slide-in-from-top-2 duration-150">
+                    <div className="px-3 py-1.5 border-b border-[#E5E5E5] text-[10px] font-mono font-bold uppercase tracking-wider text-[#777777]">
+                      Choose Language (10 Languages)
+                    </div>
+                    {TEN_LANGUAGES.map((lang) => {
+                      const selected = settings.speechRecognitionDialect === lang.code;
+                      return (
+                        <button
+                          key={lang.code}
+                          onClick={() => {
+                            updateSetting('speechRecognitionDialect', lang.code);
+                            setLangDropdownOpen(false);
+                          }}
+                          className={`w-full px-3 py-2 text-left text-xs flex items-center justify-between hover:bg-[#F7F7F7] transition-colors cursor-pointer ${
+                            selected ? 'font-bold text-black bg-[#F7F7F7]' : 'text-[#444444]'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm">{lang.flag}</span>
+                            <div>
+                              <span className="block font-medium">{lang.nativeName}</span>
+                              <span className="text-[10px] text-[#777777] font-mono">{lang.name}</span>
+                            </div>
+                          </div>
+                          {selected && <Check className="w-3.5 h-3.5 text-black" />}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
+            </div>
 
             {/* Auth Actions */}
             {user ? (
@@ -262,19 +305,19 @@ export const Navbar: React.FC = () => {
               </button>
             </div>
 
-            <div className="flex items-center justify-between px-1">
-              <span className="text-xs text-[#777777] font-mono">Dialect:</span>
-              <button
-                onClick={() =>
-                  updateSetting(
-                    'speechRecognitionDialect',
-                    settings.speechRecognitionDialect === 'en-IN' ? 'en-US' : 'en-IN'
-                  )
-                }
-                className="px-2.5 py-1 text-xs rounded border border-black text-black font-mono font-medium"
+            <div className="space-y-1.5 px-1 pt-1">
+              <span className="text-xs text-[#777777] font-mono block">Language (10 Languages):</span>
+              <select
+                value={settings.speechRecognitionDialect}
+                onChange={(e) => updateSetting('speechRecognitionDialect', e.target.value as any)}
+                className="w-full px-3 py-2 text-xs rounded-lg border border-[#E5E5E5] text-black font-medium bg-white"
               >
-                {settings.speechRecognitionDialect === 'en-IN' ? 'English (India)' : 'English (US)'}
-              </button>
+                {TEN_LANGUAGES.map((l) => (
+                  <option key={l.code} value={l.code}>
+                    {l.flag} {l.nativeName} ({l.name})
+                  </option>
+                ))}
+              </select>
             </div>
 
             {user ? (
