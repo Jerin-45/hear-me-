@@ -45,7 +45,6 @@ export const Navbar: React.FC = () => {
     { name: 'Live Captions', path: '/captions', icon: Mic },
     { name: 'Sign Library', path: '/sign-language', icon: BookOpen },
     { name: 'AI Explainer', path: '/sign-explainer', icon: Sparkles },
-    { name: 'Translator', path: '/translator', icon: Languages },
     { name: 'Camera Sign', path: '/sign-recognition', icon: Camera },
     { name: 'Text to Speech', path: '/communication', icon: Volume2 },
     { name: 'Summarizer', path: '/summarizer', icon: FileText },

@@ -28,9 +28,8 @@ export const DashboardPage: React.FC = () => {
     { name: 'Live Captions', path: '/captions', icon: Mic },
     { name: 'Sign Learning', path: '/sign-language', icon: BookOpen },
     { name: 'AI Sign Explainer', path: '/sign-explainer', icon: Sparkles },
-    { name: 'AI Translator', path: '/translator', icon: Languages },
     { name: 'Camera Recognition', path: '/sign-recognition', icon: Camera },
-    { name: 'Text-to-Speech', path: '/communication', icon: Volume2 },
+    { name: 'Text-to-Speech & Translator', path: '/communication', icon: Volume2 },
     { name: 'Summarizer', path: '/summarizer', icon: FileText },
     { name: 'Settings', path: '/settings', icon: Settings },
   ];
@@ -58,13 +57,6 @@ export const DashboardPage: React.FC = () => {
       tag: 'AI ANALYSIS',
     },
     {
-      title: 'Multilingual AI Translator',
-      desc: 'Translate voice and text across 10 languages (Tamil, Malayalam, Hindi, English, etc.) with speech output.',
-      path: '/translator',
-      icon: Languages,
-      tag: '10 LANGUAGES',
-    },
-    {
       title: 'Camera Gesture Recognition',
       desc: 'MediaPipe Hands prototype recognizing 5 core gestures via webcam.',
       path: '/sign-recognition',
@@ -72,11 +64,11 @@ export const DashboardPage: React.FC = () => {
       tag: 'COMPUTER VISION',
     },
     {
-      title: 'Text-to-Speech Communication',
-      desc: 'Convert typed text in 10 languages into natural spoken voice audio with localized quick phrases.',
+      title: 'Text-to-Speech & Translator',
+      desc: 'Convert typed messages into spoken audio or translate voice and text across 10 languages (Tamil, Malayalam, English, etc.) with instant speech playback.',
       path: '/communication',
       icon: Volume2,
-      tag: 'SPEECH SYNTHESIS',
+      tag: 'SPEECH & TRANSLATION',
     },
     {
       title: 'AI Conversation Summarizer',

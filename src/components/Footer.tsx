@@ -58,18 +58,13 @@ export const Footer: React.FC = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/translator" className="text-[#333333] hover:text-black hover:underline underline-offset-4">
-                  AI Universal Translator
-                </Link>
-              </li>
-              <li>
                 <Link to="/sign-recognition" className="text-[#333333] hover:text-black hover:underline underline-offset-4">
                   Camera Sign Recognition
                 </Link>
               </li>
               <li>
                 <Link to="/communication" className="text-[#333333] hover:text-black hover:underline underline-offset-4">
-                  Text-to-Speech Communication
+                  Text-to-Speech & Translator
                 </Link>
               </li>
               <li>

@@ -78,13 +78,6 @@ export const LandingPage: React.FC = () => {
       badge: 'Multilingual Gemini AI',
     },
     {
-      title: 'Multilingual AI Translator',
-      desc: 'Instant two-way voice and text translation across 10 languages (Tamil, Malayalam, Hindi, English, etc.) with sign language integration.',
-      icon: Languages,
-      path: '/translator',
-      badge: '10 Languages',
-    },
-    {
       title: 'Gesture Recognition',
       desc: 'Experimental camera-based hand landmark prototype detecting 5 core gestures via MediaPipe without recording video.',
       icon: Camera,
@@ -92,11 +85,11 @@ export const LandingPage: React.FC = () => {
       badge: 'MediaPipe Hands',
     },
     {
-      title: 'Text-to-Speech (10 Languages)',
-      desc: 'Type messages in Tamil, Malayalam, Hindi, English, etc., and vocalize natural speech with localized everyday phrases.',
+      title: 'Text-to-Speech & Translator (10 Languages)',
+      desc: 'Vocalize typed messages or translate voice and text across 10 languages (Tamil, Malayalam, Hindi, English, etc.) with instant audio playback.',
       icon: Volume2,
       path: '/communication',
-      badge: 'SpeechSynthesis',
+      badge: 'Speech & Translation',
     },
     {
       title: 'AI Conversation Summary',
