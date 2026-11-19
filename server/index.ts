@@ -56,7 +56,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(cors({
   origin: '*', // In development allows Vite proxy and direct calls
   methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id', 'X-Idempotency-Key'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Request-Id', 'X-Idempotency-Key', 'X-Gemini-Key'],
 }));
 app.use(express.json({ limit: '5mb' }));
 
