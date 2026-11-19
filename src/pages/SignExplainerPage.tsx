@@ -54,6 +54,18 @@ export const SignExplainerPage: React.FC = () => {
     };
   }, []);
 
+  // Check for prefilled text from Translator
+  useEffect(() => {
+    try {
+      const prefilled = sessionStorage.getItem('hearme_explainer_prefill');
+      if (prefilled) {
+        sessionStorage.removeItem('hearme_explainer_prefill');
+        setPhrase(prefilled);
+        handleExplain(prefilled);
+      }
+    } catch {}
+  }, []);
+
   const handleSelectLanguage = (code: SupportedLanguageCode) => {
     updateSetting('speechRecognitionDialect', code);
     if (isListening && recognitionRef.current) {

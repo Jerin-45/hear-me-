@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   ArrowUpRight,
   Activity,
+  Languages,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { HeroInteractiveShowcase } from '../components/HeroInteractiveShowcase';
@@ -75,6 +76,13 @@ export const LandingPage: React.FC = () => {
       icon: Sparkles,
       path: '/sign-explainer',
       badge: 'Multilingual Gemini AI',
+    },
+    {
+      title: 'Multilingual AI Translator',
+      desc: 'Instant two-way voice and text translation across 10 languages (Tamil, Malayalam, Hindi, English, etc.) with sign language integration.',
+      icon: Languages,
+      path: '/translator',
+      badge: '10 Languages',
     },
     {
       title: 'Gesture Recognition',

@@ -13,6 +13,7 @@ import {
   Clock,
   ArrowUpRight,
   CheckCircle2,
+  Languages,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSettings } from '../contexts/SettingsContext';
@@ -27,6 +28,7 @@ export const DashboardPage: React.FC = () => {
     { name: 'Live Captions', path: '/captions', icon: Mic },
     { name: 'Sign Learning', path: '/sign-language', icon: BookOpen },
     { name: 'AI Sign Explainer', path: '/sign-explainer', icon: Sparkles },
+    { name: 'AI Translator', path: '/translator', icon: Languages },
     { name: 'Camera Recognition', path: '/sign-recognition', icon: Camera },
     { name: 'Text-to-Speech', path: '/communication', icon: Volume2 },
     { name: 'Summarizer', path: '/summarizer', icon: FileText },
@@ -54,6 +56,13 @@ export const DashboardPage: React.FC = () => {
       path: '/sign-explainer',
       icon: Sparkles,
       tag: 'AI ANALYSIS',
+    },
+    {
+      title: 'Multilingual AI Translator',
+      desc: 'Translate voice and text across 10 languages (Tamil, Malayalam, Hindi, English, etc.) with speech output.',
+      path: '/translator',
+      icon: Languages,
+      tag: '10 LANGUAGES',
     },
     {
       title: 'Camera Gesture Recognition',

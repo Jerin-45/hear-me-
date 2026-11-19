@@ -105,3 +105,12 @@ export interface ChatMessage {
   content: string;
   timestamp: string;
 }
+
+export interface TranslationResult {
+  originalText: string;
+  translatedText: string;
+  fromLang: SupportedLanguageCode;
+  toLang: SupportedLanguageCode;
+  pronunciation?: string;
+  detectedSource?: string;
+}

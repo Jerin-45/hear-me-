@@ -14,6 +14,7 @@ import { DashboardPage } from './pages/DashboardPage';
 import { CaptionsPage } from './pages/CaptionsPage';
 import { SignLanguagePage } from './pages/SignLanguagePage';
 import { SignExplainerPage } from './pages/SignExplainerPage';
+import { TranslatorPage } from './pages/TranslatorPage';
 import { SignRecognitionPage } from './pages/SignRecognitionPage';
 import { CommunicationPage } from './pages/CommunicationPage';
 import { SummarizerPage } from './pages/SummarizerPage';
@@ -38,6 +39,7 @@ export function App() {
                 <Route path="/captions" element={<CaptionsPage />} />
                 <Route path="/sign-language" element={<SignLanguagePage />} />
                 <Route path="/sign-explainer" element={<SignExplainerPage />} />
+                <Route path="/translator" element={<TranslatorPage />} />
                 <Route path="/sign-recognition" element={<SignRecognitionPage />} />
                 <Route path="/communication" element={<CommunicationPage />} />
                 <Route path="/summarizer" element={<SummarizerPage />} />

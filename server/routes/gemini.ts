@@ -587,3 +587,88 @@ geminiRouter.post('/chat', validateChat, async (req: Request, res: Response) => 
     return res.json({ reply: fallbackReply });
   }
 });
+
+// =========================================================================
+// 4. AI Universal Multilingual Translator Endpoint
+// Translates between any of the 10 supported languages
+// =========================================================================
+geminiRouter.post('/translate', async (req: Request, res: Response) => {
+  const startTime = Date.now();
+  const requestId = (req.headers['x-request-id'] as string) || `req_${Date.now()}`;
+  const { text, fromLang, toLang } = req.body;
+
+  if (!text || typeof text !== 'string' || !text.trim()) {
+    return res.status(400).json({ error: 'Please provide valid text to translate.' });
+  }
+
+  const cleanText = text.trim();
+  const clientApiKey = (req.headers['x-gemini-key'] as string) || req.body.apiKey;
+  const activeGenAI = clientApiKey ? new GoogleGenerativeAI(clientApiKey) : genAI;
+
+  if (!activeGenAI) {
+    return res.json({
+      originalText: cleanText,
+      translatedText: cleanText,
+      fromLang: fromLang || 'en-IN',
+      toLang: toLang || 'ta-IN',
+      status: 'fallback',
+    });
+  }
+
+  try {
+    const prompt =
+      `You are HearMe AI Universal Multilingual Translator. Translate the following text accurately and politely from language ${fromLang} to ${toLang}.\n` +
+      `Preserve conversational meaning, tone, and cultural respect.\n` +
+      `Return strictly valid JSON with keys: "originalText", "translatedText", "fromLang", "toLang", "pronunciation" (Latin transliteration if target is non-Latin script).\n\n` +
+      `Text: "${cleanText}"`;
+
+    const model = activeGenAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      generationConfig: {
+        responseMimeType: 'application/json',
+        temperature: 0.2,
+      },
+    });
+
+    const result = await model.generateContent(prompt);
+    const raw = result.response.text();
+    const parsed = extractJsonFromText(raw);
+
+    if (parsed && parsed.translatedText) {
+      eventBus.publish('ai:completed', {
+        endpoint: '/api/gemini/translate',
+        durationMs: Date.now() - startTime,
+        cached: false,
+        requestId,
+      });
+      return res.json({
+        originalText: cleanText,
+        translatedText: parsed.translatedText,
+        fromLang: parsed.fromLang || fromLang,
+        toLang: parsed.toLang || toLang,
+        pronunciation: parsed.pronunciation || undefined,
+      });
+    }
+
+    return res.json({
+      originalText: cleanText,
+      translatedText: cleanText,
+      fromLang,
+      toLang,
+    });
+  } catch (error: any) {
+    eventBus.publish('ai:error', {
+      endpoint: '/api/gemini/translate',
+      error: error.message || 'Translation error',
+      requestId,
+    });
+    console.error(`[Gemini Translate Error] (Req: ${requestId}):`, error);
+    return res.json({
+      originalText: cleanText,
+      translatedText: cleanText,
+      fromLang,
+      toLang,
+      error: error.message,
+    });
+  }
+});
